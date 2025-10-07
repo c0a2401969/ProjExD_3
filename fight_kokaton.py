@@ -26,6 +26,8 @@ def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
 
 
 class Bird:
+
+
     """
     ゲームキャラクター（こうかとん）に関するクラス
     """
@@ -86,6 +88,8 @@ class Bird:
 
 
 class Beam:
+
+
     """
     こうかとんが放つビームに関するクラス
     """
@@ -111,6 +115,8 @@ class Beam:
 
 
 class Bomb:
+
+
     """
     爆弾に関するクラス
     """
@@ -142,6 +148,8 @@ class Bomb:
 
 
 class Score:
+
+    
     """
     スコア表示に関するクラス
     """

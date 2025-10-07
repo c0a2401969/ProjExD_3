@@ -107,7 +107,7 @@ class Beam:
         """
         if check_bound(self.rct) == (True, True):
             self.rct.move_ip(self.vx, self.vy)
-            screen.blit(self.img, self.rct)    
+            screen.blit(self.img, self.rct)
 
 
 class Bomb:
@@ -177,6 +177,8 @@ def main():
         bombs.append(bomb)
     beam = None  # ゲーム初期化時にはビームは存在しない
     score = Score()
+    beams = []  # ビーム用の空のリスト
+
     clock = pg.time.Clock()
     tmr = 0
     while True:
@@ -186,6 +188,7 @@ def main():
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                 # スペースキー押下でBeamクラスのインスタンス生成
                 beam = Beam(bird) 
+                beams.append(beam)
         screen.blit(bg_img, [0, 0])
         
         for bomb in bombs:  # こうかとんと爆弾の衝突判定
@@ -199,20 +202,23 @@ def main():
                 time.sleep(1)
                 return
         
-        for i, bomb in enumerate(bombs):  # ビームと爆弾の衝突判定
-            if beam is not None:
-                if beam.rct.colliderect(bomb.rct):
-                    # ビームと爆弾の衝突判定
-                    beam, bombs[i] = None, None
-                    bird.change_img(6, screen)
-                    score.score += 1
-                    score.update(screen)
+        for bomb_ind, bomb in enumerate(bombs):  # 爆弾一つずつに対して実行
+            for beam_ind, beam in enumerate(beams):  # ビーム一つずつに対して実行
+                if beam is not None:
+                    if beam.rct.colliderect(bomb.rct):  # ビームと爆弾の衝突判定
+                        beams[beam_ind], bombs[bomb_ind] = None, None
+                        bird.change_img(6, screen)
+                        score.score += 1
+                        score.update(screen)
         bombs = [bomb for bomb in bombs if bomb is not None]
 
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
-        if beam is not None:
-            beam.update(screen)
+        for i, beam in enumerate(beams):
+            if beam is not None:
+                beam.update(screen)
+                if check_bound(beam.rct) != (True, True):
+                    beams.remove(beams[i])
         for bomb in bombs:
             bomb.update(screen)
         score.update(screen)
